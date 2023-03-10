@@ -42,12 +42,4 @@ type Token @entity {
   tokenId: BigInt! # uint256
   tokenURI: String!
   owner: Bytes! # address
-  stateSnapshot: CurrentState!
-}
-
-type CurrentState @entity(immutable: true) {
-  id: Bytes!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  tokens: [Token!]! @derivedFrom(field: "stateSnapshot")
 }

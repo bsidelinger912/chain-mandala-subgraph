@@ -9,7 +9,6 @@ import {
 import {
   Approval,
   ApprovalForAll,
-  CurrentState,
   OwnershipTransferred,
   Token,
   Transfer
@@ -77,22 +76,9 @@ export function handleTransfer(event: TransferEvent): void {
 
   const contract = OnChainNFT.bind(event.address)
 
-  let latestTokenId = contract.getLatestTokenId();
-
-  const currentState = new CurrentState(event.transaction.hash);
-  currentState.blockNumber = event.block.number;
-  currentState.blockTimestamp = event.block.timestamp;
-
-  while (latestTokenId.toI64() > 0) {
-    const token = new Token(Bytes.fromI32(latestTokenId.toI32()));
-    token.tokenURI = contract.tokenURI(latestTokenId);
-    token.tokenId = latestTokenId;
-    token.owner = entity.to;
-    token.stateSnapshot = currentState.id;
-    token.save();
-
-    latestTokenId = latestTokenId.minus(BigInt.fromI64(1));
-  }
-
-  currentState.save()
+  const token = new Token(Bytes.fromI32(entity.tokenId.toI32()))
+  token.tokenURI = contract.tokenURI(entity.tokenId)
+  token.tokenId = entity.tokenId
+  token.owner = entity.to
+  token.save()
 }
