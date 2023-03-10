@@ -1,13 +1,17 @@
+import { BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
   Approval as ApprovalEvent,
   ApprovalForAll as ApprovalForAllEvent,
+  OnChainNFT,
   OwnershipTransferred as OwnershipTransferredEvent,
   Transfer as TransferEvent
 } from "../generated/OnChainNFT/OnChainNFT"
 import {
   Approval,
   ApprovalForAll,
+  CurrentState,
   OwnershipTransferred,
+  Token,
   Transfer
 } from "../generated/schema"
 
@@ -70,4 +74,25 @@ export function handleTransfer(event: TransferEvent): void {
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+
+  const contract = OnChainNFT.bind(event.address)
+
+  let latestTokenId = contract.getLatestTokenId();
+
+  const currentState = new CurrentState(event.transaction.hash);
+  currentState.blockNumber = event.block.number;
+  currentState.blockTimestamp = event.block.timestamp;
+
+  while (latestTokenId.toI64() > 0) {
+    const token = new Token(Bytes.fromI32(latestTokenId.toI32()));
+    token.tokenURI = contract.tokenURI(latestTokenId);
+    token.tokenId = latestTokenId;
+    token.owner = entity.to;
+    token.stateSnapshot = currentState.id;
+    token.save();
+
+    latestTokenId = latestTokenId.minus(BigInt.fromI64(1));
+  }
+
+  currentState.save()
 }
