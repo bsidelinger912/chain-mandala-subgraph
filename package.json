@@ -3,12 +3,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ chain-mandala",
-    "create-local": "graph create --node http://localhost:8020/ chain-mandala",
-    "remove-local": "graph remove --node http://localhost:8020/ chain-mandala",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chain-mandala",
-    "test": "graph test"
+    "build:prod": "graph build --network=matic",
+    "build:dev": "graph build --network=mumbai"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.42.4",

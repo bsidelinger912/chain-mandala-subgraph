@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: OnChainNFT
-    network: matic
+    network: mumbai
     source:
-      address: "0xee398b138b18865aC33b53C22E76D0d31D40a20A"
       abi: OnChainNFT
-      startBlock: 26031171
+      address: "0x29AcF7370f8c196DD49C623E4a1Bfa5350565Dc6"
+      startBlock: 25549194
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
